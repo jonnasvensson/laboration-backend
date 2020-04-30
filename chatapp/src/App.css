@@ -1,38 +1,80 @@
 .App {
-  text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.container {
+    width: 400px;
+    height: 500px;
+    display: flex;
+    justify-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.container_chat {
+    width: 400px;
+    height: 500px;
+    background-color: lightgrey;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.container_messages {}
+
+form {
+    width: 100%;
+    height: 30%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: 5px;
 }
 
-.App-link {
-  color: #61dafb;
+.input__name {
+    width: 80%;
+    height: 60%;
+    border-radius: 8px;
+    background-color: lightgray;
+    border: none;
+    padding-left: 10px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.textarea {
+    width: 80%;
+    height: 60%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: none;
+    padding: 10px 0 0 10px;
+}
+
+.input__button {
+    width: 20%;
+    height: 60%;
+    border-radius: 8px;
+    border: none;
+    background-color: darkcyan;
+    cursor: pointer;
+}
+
+ul {
+    display: flex;
+    padding-left: 0px;
+    justify-content: space-evenly;
+}
+
+li {
+    cursor: pointer;
+    list-style: none;
+}
+
+h4 {
+    text-align: center;
+}
+
+h5 {
+    text-align: center;
 }

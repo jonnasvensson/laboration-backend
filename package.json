@@ -1,0 +1,23 @@
+{
+  "name": "laboration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "db.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonnasvensson/laboration-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonnasvensson/laboration-backend/issues"
+  },
+  "homepage": "https://github.com/jonnasvensson/laboration-backend#readme",
+  "dependencies": {
+    "mongodb": "^3.5.6"
+  }
+}

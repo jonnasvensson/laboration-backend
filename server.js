@@ -13,7 +13,9 @@ const { getClient, getDB, createObjectId } = require('./db');
 app.get('/chatrooms', (req, res) => {
 
     console.log('DB Connected');
+    
     const db = getDB();
+
     db.collection('chatrooms')
         .find({})
         .toArray()
@@ -28,7 +30,7 @@ app.get('/chatrooms', (req, res) => {
 
 app.get('/chatrooms/:id', (req, res) => {
     let roomId = req.params.id;
-
+    
     const db = getDB();
     db.collection('chatrooms')
         .findOne({_id: createObjectId(roomId)})
@@ -52,7 +54,7 @@ app.post('/chatrooms', (req, res) => {
     db.collection('chatrooms')
         .insertOne(createRoom)
         .then(result => {
-            data._id = result.insertedId;
+            createRoom._id = result.insertedId;
             res.status(201).send(createRoom);
         })
         .catch(e => {
@@ -63,8 +65,9 @@ app.post('/chatrooms', (req, res) => {
 
 // Skapa knapp i frontenden som pekar på id:et vid delete.
 
-app.delete('/chatrooms/:id', (req, res) => {
+app.delete('/:id', (req, res) => {
     let roomId = req.params.id;
+    console.log('ID -->', roomId);
     
     const db = getDB();
     
@@ -90,8 +93,13 @@ io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett eve
         socket.emit('username', data);
     }) */
 
-    socket.on("message", (data) => {
-        socket.broadcast.emit("message", data);
+    socket.on('messages', (data) =>{ 
+        console.log('MESSAGES', data);
+        
+    })
+
+    socket.on("new message", (data) => {
+        socket.broadcast.emit("new message", data);
         console.log('Got message', data);
     })  
 })

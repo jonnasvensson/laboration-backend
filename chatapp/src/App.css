@@ -69,6 +69,7 @@ ul {
 li {
     cursor: pointer;
     list-style: none;
+    text-align: center;
 }
 
 h4 {
@@ -77,4 +78,13 @@ h4 {
 
 h5 {
     text-align: center;
+}
+
+button {
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    border: none;
+    background-color: darkcyan;
+    cursor: pointer;
 }

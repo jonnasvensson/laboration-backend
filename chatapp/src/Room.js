@@ -8,11 +8,35 @@ import './App.css';
 export default function Room({ roomName, socket, userName, rooms, roomId }) {
     const [inputValue, setInputValue] = useState("");
     const [messages, setMessages] = useState([]);
-    const [incomingMessages, setincomingMessages] = useState([]);
-    const [data, setData] = useImmer();
+    const [data, setData] = useImmer([]);
 
-    let mappedIncomingMessages;
+    const [incomingMessages, setincomingMessages] = useImmer([]);
 
+    useEffect(() => {
+        console.log(data);
+        
+        socket.on('messages', (data) => {
+            console.log(data);
+            
+            data.map((newMessage) => {
+                return setData(draft => {
+                    draft.push(newMessage);
+                })
+            })
+        })
+    }, [])
+    console.log(incomingMessages);
+    
+    useEffect(() => {
+        
+        socket.on('new messages', (data) => {            
+            data.map((newMessage) => {
+                return setData(draft => {
+                    draft.push(newMessage);
+                })
+            })
+        })
+    }, [])
 
     const handleChange = (e) => {
         setInputValue(e.target.value);
@@ -20,34 +44,26 @@ export default function Room({ roomName, socket, userName, rooms, roomId }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();        
-        let msg = {
+        let data = {
             userName : userName,
             message: inputValue,
             roomName: roomName 
         }
         //socket.on('message', (msg) => {});  //Denna lyssnar på emit ovan
-            socket.emit('message', msg);    // skickar data till socket
-            console.log('MSG --> ', msg);
+            socket.emit('new message', data);    // skickar data till socket
+            console.log('MSG --> ', data);
          
-        messages.push(msg)
+        messages.push(data)
 
-        console.log(msg);
+        console.log(data);
         console.log(messages);
         
         setInputValue(""); 
 
-        socket.on('message', (msg) => {
-            console.log(msg);
-            incomingMessages.push(msg);
-            console.log(incomingMessages);  
-            setData(draftState => {
-                draftState.operation();
-            });
-        })
     }    
     console.log('BEFORE MAPPING', incomingMessages);
     
-    mappedIncomingMessages = incomingMessages.map((message, idx) => {
+    const mappedIncomingMessages = incomingMessages.map((message, idx) => {
         return <li key={idx}> <h5><strong>{userName}</strong></h5>
             {message}</li>
     })

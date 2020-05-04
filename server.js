@@ -30,7 +30,7 @@ app.get('/chatrooms', (req, res) => {
 
 app.get('/chatrooms/:id', (req, res) => {
     let roomId = req.params.id;
-    
+
     const db = getDB();
     db.collection('chatrooms')
         .findOne({_id: createObjectId(roomId)})
@@ -47,7 +47,7 @@ app.post('/chatrooms', (req, res) => {
     const db = getDB(); // hämtar databasen
     
     let createRoom = {
-        room: req.body.data,
+        room: req.body.room,
         messages: [],
     }
 
@@ -65,14 +65,15 @@ app.post('/chatrooms', (req, res) => {
 
 // Skapa knapp i frontenden som pekar på id:et vid delete.
 
-app.delete('/:id', (req, res) => {
+app.delete('/chatrooms/:id', (req, res) => {
     let roomId = req.params.id;
     console.log('ID -->', roomId);
     
     const db = getDB();
+
     
     db.collection('chatrooms')
-        .remove({_id: createObjectId(roomId)})
+        .findOneAndDelete({_id: createObjectId(roomId)})
         .then(() => {
             res.status(204).end();
         })

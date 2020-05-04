@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
-import io from 'socket.io-client';
 
 import Room from './Room'
 
@@ -20,18 +19,13 @@ export default function Chatview({ userName, socket, updateSocket }) {
                 setRooms(data);
                 console.log(res.data);
             })
-    }, []);
+    }, []);    
 
     const clickRoom = (e, id, name) => {
         console.log(id);
         setRoomId(id)
         setRoomName(name);
     }
-
-    const handleChange = (e) => {
-        setInputValue(e.target.value);
-    }
-    
 
     const handleNewRoom = () => {
         let room = {
@@ -46,11 +40,17 @@ export default function Chatview({ userName, socket, updateSocket }) {
         .catch(e => {
             console.error(e);
         })
+        setInputValue("");
     }
 
-    const handleDelete = (e) => {
+    const handleDelete = (id, data) => {
         console.log('Button clicked');
-        axios.delete('/:id')
+        console.log('ID', id);
+
+        axios.delete('/chatrooms/' + id)
+        .then(res => {
+            console.log(res);
+        })
     }
 
     // kopplar med socket anrop med (id) socket.join = connection till ett speciellt rum
@@ -64,7 +64,7 @@ export default function Chatview({ userName, socket, updateSocket }) {
         return <li key={i} >
             <strong onClick={(e) => clickRoom(e, id, name)}>{name}</strong>
             <div>
-                <button onClick={handleDelete}>Delete</button>
+                <button onClick={() => handleDelete(id)}>Delete</button>
             </div>
         </li>
     })
@@ -77,8 +77,9 @@ export default function Chatview({ userName, socket, updateSocket }) {
             }
             <input 
                 type="text" 
-                onChange={handleChange}
-                value={inputValue}/>
+                onChange={(e) => setInputValue(e.target.value)}
+                value={inputValue}
+                />
             <input 
                 type="button" 
                 value="Create chatroom"

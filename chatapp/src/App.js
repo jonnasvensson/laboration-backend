@@ -6,14 +6,13 @@ import io from 'socket.io-client';
 import Chatview from './Chatview'
 import Room from './Room'
 
-//const socket = (io('http://localhost:8095'))
+const socket = (io('http://localhost:8095'));
 
 
 function App() {
   const [userName, setUserName] = useState("");
-  const [nameInput, setNameInput] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [enterChat, updateEnterChat] = useState(false);
-  const [socket, updateSocket] = useState(null);
 
   useEffect(() => {
     axios.get('/chatrooms')
@@ -26,24 +25,25 @@ function App() {
   }, []);
 
   const handleChange = (e) => {
-    setNameInput(e.target.value);
+    setInputValue(e.target.value);
   }
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateSocket(io('http://localhost:8095')) // connectar med socket vid submit
+    if (inputValue.trim().length === 0) {
+      setInputValue("");
+      return;
+    }
     updateEnterChat(true);
-    setUserName(nameInput);
+    setUserName(inputValue);
   }
-
-
 
 
   return (
     <div className="App">
       <h1>Chatty</h1>
       {
-        enterChat ? <Chatview userName={userName} socket={socket} updateSocket={updateSocket} />
+        enterChat ? <Chatview userName={userName} socket={socket}  />
           :
           <div className="container">
             <form type="submit" onSubmit={handleSubmit}>
@@ -52,7 +52,7 @@ function App() {
                 placeholder="Name"
                 type="text"
                 onChange={handleChange}
-                value={nameInput} />
+                value={inputValue} />
               <input
                 className="input__button"
                 type="submit"

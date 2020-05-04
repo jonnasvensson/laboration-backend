@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 
 import Room from './Room'
 
-export default function Chatview({ userName, socket }) {
+export default function Chatview({ userName, socket, updateSocket }) {
     const [rooms, setRooms] = useState([]);
     const [roomId, setRoomId] = useState("");
     const [roomName, setRoomName] = useState("");
@@ -42,7 +42,7 @@ export default function Chatview({ userName, socket }) {
         <div className="container_chat">
             <h4>{userName}</h4>
             { 
-                roomName ? <Room renderRooms={renderRooms} roomName={roomName} socket={socket} userName={userName}/> : <ul>{renderRooms}</ul> 
+                roomName ? <Room renderRooms={renderRooms} roomName={roomName} socket={socket} updateSocket={updateSocket} userName={userName} rooms={rooms} roomId={roomId}/> : <ul>{renderRooms}</ul> 
             }
             <div className="container_messages">
             </div>

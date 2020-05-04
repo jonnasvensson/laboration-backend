@@ -9,16 +9,10 @@ app.use(express.json());
 
 const { getClient, getDB, createObjectId } = require('./db');
 
-io.on('connection', (socket) => {
-    console.log('User connected, id: ', socket.id);
-
-    socket.on("chat", (data) => {
-        io.sockets.emit("chat", data);
-    })
-})
 
 app.get('/chatrooms', (req, res) => {
-    console.log('Connected');
+
+    console.log('DB Connected');
     const db = getDB();
     db.collection('chatrooms')
         .find({})
@@ -49,13 +43,17 @@ app.get('/chatrooms/:id', (req, res) => {
 
 app.post('/chatrooms', (req, res) => {
     const db = getDB(); // hämtar databasen
-    let data = req.body;
+    
+    let createRoom = {
+        room: req.body.data,
+        messages: [],
+    }
 
     db.collection('chatrooms')
-        .insertOne(data)
+        .insertOne(createRoom)
         .then(result => {
             data._id = result.insertedId;
-            res.status(201).send(data);
+            res.status(201).send(createRoom);
         })
         .catch(e => {
             console.error(e);
@@ -64,13 +62,13 @@ app.post('/chatrooms', (req, res) => {
 });
 
 // Skapa knapp i frontenden som pekar på id:et vid delete.
-// Kolla deleten, funkar ej!
+
 app.delete('/chatrooms/:id', (req, res) => {
     let roomId = req.params.id;
-    const db = getDB();
-    console.log('ROOMID', roomId);
     
-    db.collection('chatroom')
+    const db = getDB();
+    
+    db.collection('chatrooms')
         .remove({_id: createObjectId(roomId)})
         .then(() => {
             res.status(204).end();
@@ -80,5 +78,22 @@ app.delete('/chatrooms/:id', (req, res) => {
             res.status(500).end();
         });
 });
+
+
+// Socket setup
+
+
+io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett event kallad connection
+    console.log('User connected, id: ', socket.id); // när connection är gjord, log visas socket har en prop .id
+    // listen for the username
+  /*   socket.on('username', (data) => {   // tar emot datan som skickats från frontend
+        socket.emit('username', data);
+    }) */
+
+    socket.on("message", (data) => {
+        socket.broadcast.emit("message", data);
+        console.log('Got message', data);
+    })  
+})
 
 http.listen(PORT, () => console.log(`Server started on ${PORT}`));

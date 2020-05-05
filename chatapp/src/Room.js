@@ -1,98 +1,79 @@
 import React, { useEffect, useState } from 'react';
 import { useImmer } from 'use-immer';
-import axios from 'axios';
 
 import './App.css';
+import axios from 'axios';
 
 
 export default function Room({ roomName, socket, userName, rooms, roomId }) {
     const [inputValue, setInputValue] = useState("");
-    const [messages, setMessages] = useState([]);
     const [data, setData] = useImmer([]);
 
-    const [incomingMessages, setincomingMessages] = useImmer([]);
+    useEffect(() => {        // hämtar hem alla meddelenaden
+        socket.on('new messages', (data) => {
+            console.log('NEW MESSAGES --> USEEFFECT1', data);
 
-    useEffect(() => {
-        console.log(data);
-        
-        socket.on('messages', (data) => {
-            console.log(data);
-            
-            data.map((newMessage) => {
-                return setData(draft => {
-                    draft.push(newMessage);
+            data.map((message) => {
+                return setData((draft) => {
+                    draft.push(message);
                 })
             })
         })
     }, [])
-    console.log(incomingMessages);
-    
-    useEffect(() => {
+/*     socket.on('message', data => {
+        console.log('MESSAGE', data);
         
-        socket.on('new messages', (data) => {            
-            data.map((newMessage) => {
-                return setData(draft => {
-                    draft.push(newMessage);
-                })
-            })
-        })
-    }, [])
+    }) */
 
-    const handleChange = (e) => {
-        setInputValue(e.target.value);
-    }
+    useEffect(() => {
+        socket.on('message', (data) => {
+/*             axios.get('/chatroom/:id')
+            .then(() => {
+                
+            })
+ */            console.log('MESSAGE --> USEEFFECT2', data);
+/* 
+            setData((draft) => {
+
+                draft.push(data);
+            });
+ */        });
+    }, []);
+
 
     const handleSubmit = (e) => {
-        e.preventDefault();        
+        e.preventDefault();
         let data = {
-            userName : userName,
+            userName: userName,
             message: inputValue,
-            roomName: roomName 
+            roomId: roomId
         }
-        //socket.on('message', (msg) => {});  //Denna lyssnar på emit ovan
-            socket.emit('new message', data);    // skickar data till socket
-            console.log('MSG --> ', data);
-         
-        messages.push(data)
+        socket.emit('new message', data);   // skickar meddelandet.
+        setData((draft) => {
+            draft.push(data)
+        });
+        setInputValue("");
+        socket.emit('room', (roomId));
 
-        console.log(data);
-        console.log(messages);
-        
-        setInputValue(""); 
+    }
 
-    }    
-    console.log('BEFORE MAPPING', incomingMessages);
-    
-    const mappedIncomingMessages = incomingMessages.map((message, idx) => {
-        return <li key={idx}> <h5><strong>{userName}</strong></h5>
-            {message}</li>
+    const mappedMessages = data.map((message, idx) => {
+        return <li key={idx}> <h5><strong>{message.userName}</strong></h5>
+            {message.message}</li>
     })
-    console.log('AFTER MAPPING', incomingMessages);
-    console.log(rooms);
-    
-    let holdmessages = rooms.filter(room => {
-        
+    console.log('data-->', data);
+
+/*     let holdmessages = rooms.filter(room => {
+
         return room.id === roomId;
 
     })
     console.log(holdmessages);
-    
-    
-/*     const mappedMessages = messages.map((message, idx) => {
-        return <li key={idx}> <h5><strong>{userName}</strong></h5>
-            {message.message}</li>
-    })
-    console.log(messages);
- */    
- 
-    return (
+
+ */    return (
         <div>
             <h2>You have entered {roomName}</h2>
-            <ul>{mappedIncomingMessages}</ul>
-
-          {/*    <ul>
-                {mappedMessages}
-            </ul> */}
+            <ul>{mappedMessages}</ul>
             <form type="submit" onSubmit={handleSubmit}>
                 <textarea
                     cols="30"
@@ -101,7 +82,7 @@ export default function Room({ roomName, socket, userName, rooms, roomId }) {
                     placeholder="Message"
                     type="text"
                     id="nameInput"
-                    onChange={handleChange}
+                    onChange={(e) =>setInputValue(e.target.value)}
                     value={inputValue}
                 ></textarea>
                 <input

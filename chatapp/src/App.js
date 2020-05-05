@@ -14,7 +14,7 @@ function App() {
   const [inputValue, setInputValue] = useState("");
   const [enterChat, updateEnterChat] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { // plocka bort, behöver inte göra två ggr
     axios.get('/chatrooms')
       .then(res => {
         let data = res.data;
@@ -30,11 +30,11 @@ function App() {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (inputValue.trim().length === 0) {
+/*     if (inputValue.trim().length === 0) {
       setInputValue("");
       return;
     }
-    updateEnterChat(true);
+ */    updateEnterChat(true);
     setUserName(inputValue);
   }
 

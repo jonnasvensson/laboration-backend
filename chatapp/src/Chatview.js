@@ -11,58 +11,89 @@ export default function Chatview({ userName, socket, updateSocket }) {
     const [inputValue, setInputValue] = useState("");
 
 
-    useEffect(() => {
+    function getAxios() {
         axios.get('/chatrooms')
             .then(res => {
                 let data = res.data;
-                let id = res.data._id;
                 setRooms(data);
                 console.log(res.data);
+                console.log(data);
             })
-    }, []);    
+    };
+    console.log(rooms._id);
+    
+    
+    const handleRoom = (id, name) => {
+        axios.get(`/chatrooms/${id}`)
+        .then((res) => {
+            console.log(res.data);  
+            console.log(res.data._id);
 
-    const clickRoom = (e, id, name) => {
-        console.log(id);
-        setRoomId(id)
-        setRoomName(name);
-    }
-
-    const handleNewRoom = () => {
-        let room = {
-            room: inputValue,
-            messages: [],
-        }    
-        console.log('Clicked new room');
-        axios.post('/chatrooms', room )
-        .then(res => {
-            setRooms([...rooms, room])  // kopierar rooms och lägger till det nya --> room
         })
         .catch(e => {
             console.error(e);
         })
-        setInputValue("");
+        
+        setRoomId(id)
+        setRoomName(name);
+        console.log(roomId);
+        console.log(roomName);
+        
+        
     }
 
     const handleDelete = (id, data) => {
-        console.log('Button clicked');
-        console.log('ID', id);
-
-        axios.delete('/chatrooms/' + id)
-        .then(res => {
-            console.log(res);
-        })
+        axios.delete(`/chatrooms/${id}`)
+            .then(res => {
+                console.log(res);
+                return data;
+            })
+            .catch(e => {
+                console.error(e);
+            })
+        getAxios();
+    }
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let room = {
+            room: inputValue,
+            messages: [],
+        }
+        if (inputValue.trim().length === 0) {
+            setInputValue("");
+            return;
+        }
+        axios.post('/chatrooms', room)
+            .then(() => {
+                setRooms([...rooms, room])  // kopierar rooms och lägger till det nya --> room
+            })
+            .catch(e => {
+                console.error(e);
+            })
+        setInputValue("");
     }
 
     // kopplar med socket anrop med (id) socket.join = connection till ett speciellt rum
 
 
+    useEffect(() => {
+        getAxios();
+    }, []);
+
+    console.log(roomName);
+    
     const renderRooms = rooms.map((room, i) => {
-        let id = room._id;
-        let name = room.room;
-        console.log(room.room);
+        console.log(room);
         
+        let id = room._id;
+        console.log('ID -->', id);
+
+        let name = room.room;
+        console.log('NAME -->', name);
+
         return <li key={i} >
-            <strong onClick={(e) => clickRoom(e, id, name)}>{name}</strong>
+            <strong onClick={() => handleRoom(id, name)}>{name}</strong>
             <div>
                 <button onClick={() => handleDelete(id)}>Delete</button>
             </div>
@@ -70,20 +101,20 @@ export default function Chatview({ userName, socket, updateSocket }) {
     })
 
     return (
-        <div className="container_chat">            
+        <div className="container_chat">
             <h4>{userName}</h4>
             {
-                roomName ? <Room renderRooms={renderRooms} roomName={roomName} socket={socket} updateSocket={updateSocket} userName={userName} rooms={rooms} roomId={roomId} /> : <ul>{renderRooms}</ul>
+                roomName ? <Room renderRooms={renderRooms} roomName={roomName} socket={socket} updateSocket={updateSocket} userName={userName} rooms={rooms} roomId={roomId}/> : <ul>{renderRooms}</ul>
             }
-            <input 
-                type="text" 
+            <input
+                type="text"
                 onChange={(e) => setInputValue(e.target.value)}
                 value={inputValue}
-                />
-            <input 
-                type="button" 
+            />
+            <input
+                type="button"
                 value="Create chatroom"
-                onClick={handleNewRoom}/>            
+                onClick={handleSubmit} />
             <div className="container_messages">
             </div>
         </div>

@@ -11,9 +11,7 @@ const { getClient, getDB, createObjectId } = require('./db');
 
 
 app.get('/chatrooms', (req, res) => {
-
     console.log('DB Connected');
-    
     const db = getDB();
 
     db.collection('chatrooms')
@@ -29,6 +27,7 @@ app.get('/chatrooms', (req, res) => {
 });
 
 app.get('/chatrooms/:id', (req, res) => {
+
     let roomId = req.params.id;
 
     const db = getDB();
@@ -41,6 +40,7 @@ app.get('/chatrooms/:id', (req, res) => {
         console.error(e);
         res.status(500).end();
     });
+
 });
 
 app.post('/chatrooms', (req, res) => {
@@ -63,6 +63,13 @@ app.post('/chatrooms', (req, res) => {
         });
 });
 
+/* app.put('/chatroom/:id', (req, res) => {
+    const db = getDB();
+    let roomId = req.params.id;
+    console.log('UPPDATERAD');
+
+}) */
+
 // Skapa knapp i frontenden som pekar på id:et vid delete.
 
 app.delete('/chatrooms/:id', (req, res) => {
@@ -71,7 +78,6 @@ app.delete('/chatrooms/:id', (req, res) => {
     
     const db = getDB();
 
-    
     db.collection('chatrooms')
         .findOneAndDelete({_id: createObjectId(roomId)})
         .then(() => {
@@ -86,23 +92,39 @@ app.delete('/chatrooms/:id', (req, res) => {
 
 // Socket setup
 
-
 io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett event kallad connection
     console.log('User connected, id: ', socket.id); // när connection är gjord, log visas socket har en prop .id
-    // listen for the username
-  /*   socket.on('username', (data) => {   // tar emot datan som skickats från frontend
-        socket.emit('username', data);
-    }) */
-
-    socket.on('messages', (data) =>{ 
-        console.log('MESSAGES', data);
+    socket.on("new message", (data) => {    // denna triggas och lyssnar på new message
+        console.log('NEW MESSAGE I SERVER', data);
+        console.log(data.roomId);
         
-    })
+        const db = getDB();
 
-    socket.on("new message", (data) => {
-        socket.broadcast.emit("new message", data);
-        console.log('Got message', data);
+        db.collection('chatrooms')
+        .updateOne({_id: createObjectId(data.roomId)}, {$push: {
+            "messages": data }
+        })
+        .then((res) => {
+            console.log(res);
+            console.log(data);
+            
+            console.log('COMPLETED');
+        })
+        .catch(e => {
+            console.error(e);
+        });
+    
+
+        io.sockets.emit("message", data);
+        console.log('MESSAGE FROM CLIENT', data);
+        
     })  
-})
+    socket.on('room', (roomId) => {
+        socket.join(roomId)
+    })
+/*     socket.on('message', data =>{
+        socket.broadcast.emit('message', data);
+    })
+ */})
 
 http.listen(PORT, () => console.log(`Server started on ${PORT}`));

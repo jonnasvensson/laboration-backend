@@ -69,8 +69,8 @@ export default function Chatview({ userName, socket, updateSocket }) {
             return;
         }
         axios.post('/chatrooms', room)
-            .then(() => {
-                setRooms([...rooms, room])  // kopierar rooms och lägger till det nya --> room
+            .then((res) => {
+                setRooms([...rooms, res.data])  // kopierar rooms och lägger till det nya --> room
             })
             .catch(e => {
                 console.error(e);

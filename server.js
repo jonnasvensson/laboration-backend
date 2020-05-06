@@ -44,7 +44,7 @@ app.get('/chatrooms/:id', (req, res) => {
 });
 
 app.post('/chatrooms', (req, res) => {
-    const db = getDB(); // hämtar databasen
+    const db = getDB(); 
     
     let createRoom = {
         room: req.body.room,
@@ -80,14 +80,9 @@ app.delete('/chatrooms/:id', (req, res) => {
         });
 });
 
-
-// Socket setup
-
-io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett event kallad connection
-    console.log('User connected, id: ', socket.id); // när connection är gjord, log visas socket har en prop .id
-    socket.on("new message", (data) => {    // denna triggas och lyssnar på new message
-        console.log('NEW MESSAGE I SERVER', data);
-        console.log(data.roomId);
+io.on('connection', (socket) => {   
+    console.log('User connected, id: ', socket.id); 
+    socket.on("new message", (data) => {    
         
         const db = getDB();
 
@@ -95,27 +90,17 @@ io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett eve
         .updateOne({_id: createObjectId(data.roomId)}, {$push: {
             "messages": data }
         })
-        .then((res) => {
-            console.log(res);
-            console.log(data);
-            
+        .then(() => {            
             console.log('COMPLETED');
         })
         .catch(e => {
             console.error(e);
         });
-    
-
-        socket.broadcast.emit("message", data);
-        console.log('MESSAGE FROM CLIENT', data);
-        
+        socket.broadcast.emit("message", data);       
     })  
     socket.on('room', (roomId) => {
         socket.join(roomId)
     })
-/*     socket.on('message', data =>{
-        socket.broadcast.emit('message', data);
-    })
- */})
+})
 
 http.listen(PORT, () => console.log(`Server started on ${PORT}`));

@@ -13,13 +13,11 @@ export default function Room({ roomName, socket, userName, rooms, roomId, getMes
         socket.on('new messages', (data) => {
             console.log('NEW MESSAGES --> USEEFFECT1', data);
 
-            data.map((message) => {
-                return setData((draft) => {
-                    draft.push(message);
-                })
-            })
-        })
-    }, [])
+            return setData((draft) => {
+              return [...draft, data];
+            });
+        });
+    }, []);
 /*     socket.on('message', data => {
         console.log('MESSAGE', data);
         
@@ -27,14 +25,10 @@ export default function Room({ roomName, socket, userName, rooms, roomId, getMes
 
     useEffect(() => {
         socket.on('message', (data) => {
-/*             axios.get('/chatroom/:id')
-            .then(() => {
-                
-            })
- */            console.log('MESSAGE --> USEEFFECT2', data);
+          console.log('MESSAGE --> USEEFFECT2', data);
  
             setData((draft) => {
-                draft.push(data);
+              return [...draft, data];
             });
         });
     }, []);
@@ -50,20 +44,20 @@ export default function Room({ roomName, socket, userName, rooms, roomId, getMes
         socket.emit('new message', data);   // skickar meddelandet.
         socket.emit('room', (roomId));
         setData((draft) => {
-            draft.push(data)
+          return [...draft, data];
         });
         setInputValue("");
     }
     console.log(getMessages);
     
-    const mappedGetMessages = getMessages.map((getMessage, jdx) => {
+    const mappedGetMessages = getMessages.concat(data).map((getMessage, jdx) => {
         return <li key={jdx}><h5><strong>{getMessage.userName}</strong></h5>{getMessage.message}</li>
     } )
 
     const mappedMessages = data.map((message, idx) => {
         return <li key={idx}> <h5><strong>{message.userName}</strong></h5>
             {message.message}</li>
-    })
+    });
     console.log('data-->', data);
 
 /*     let holdmessages = rooms.filter(room => {

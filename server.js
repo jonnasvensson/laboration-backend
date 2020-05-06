@@ -104,7 +104,6 @@ io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett eve
         .catch(e => {
             console.error(e);
         });
-    
 
         socket.broadcast.emit("message", data);
         console.log('MESSAGE FROM CLIENT', data);

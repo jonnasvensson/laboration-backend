@@ -63,15 +63,6 @@ app.post('/chatrooms', (req, res) => {
         });
 });
 
-/* app.put('/chatroom/:id', (req, res) => {
-    const db = getDB();
-    let roomId = req.params.id;
-    console.log('UPPDATERAD');
-
-}) */
-
-// Skapa knapp i frontenden som pekar på id:et vid delete.
-
 app.delete('/chatrooms/:id', (req, res) => {
     let roomId = req.params.id;
     console.log('ID -->', roomId);
@@ -115,7 +106,7 @@ io.on('connection', (socket) => {   // skapar connection --> lyssnar på ett eve
         });
     
 
-        io.sockets.emit("message", data);
+        socket.broadcast.emit("message", data);
         console.log('MESSAGE FROM CLIENT', data);
         
     })  

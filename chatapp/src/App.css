@@ -22,7 +22,16 @@
     justify-content: space-between;
 }
 
-.container_messages {}
+.container_messages {
+    border: 1px solid grey;
+    overflow: auto;
+}
+
+.messages_db {
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+}
 
 form {
     width: 100%;

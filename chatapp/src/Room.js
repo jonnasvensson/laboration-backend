@@ -5,7 +5,7 @@ import './App.css';
 import axios from 'axios';
 
 
-export default function Room({ roomName, socket, userName, rooms, roomId }) {
+export default function Room({ roomName, socket, userName, rooms, roomId, getMessages }) {
     const [inputValue, setInputValue] = useState("");
     const [data, setData] = useImmer([]);
 
@@ -32,12 +32,11 @@ export default function Room({ roomName, socket, userName, rooms, roomId }) {
                 
             })
  */            console.log('MESSAGE --> USEEFFECT2', data);
-/* 
+ 
             setData((draft) => {
-
                 draft.push(data);
             });
- */        });
+        });
     }, []);
 
 
@@ -49,13 +48,17 @@ export default function Room({ roomName, socket, userName, rooms, roomId }) {
             roomId: roomId
         }
         socket.emit('new message', data);   // skickar meddelandet.
+        socket.emit('room', (roomId));
         setData((draft) => {
             draft.push(data)
         });
         setInputValue("");
-        socket.emit('room', (roomId));
-
     }
+    console.log(getMessages);
+    
+    const mappedGetMessages = getMessages.map((getMessage, jdx) => {
+        return <li key={jdx}><h5><strong>{getMessage.userName}</strong></h5>{getMessage.message}</li>
+    } )
 
     const mappedMessages = data.map((message, idx) => {
         return <li key={idx}> <h5><strong>{message.userName}</strong></h5>
@@ -73,7 +76,10 @@ export default function Room({ roomName, socket, userName, rooms, roomId }) {
  */    return (
         <div>
             <h2>You have entered {roomName}</h2>
-            <ul>{mappedMessages}</ul>
+            <div className="container_messages">
+{/*                 <ul>{mappedMessages}</ul>
+ */}                <ul className="messages_db">{mappedGetMessages}</ul>
+            </div>
             <form type="submit" onSubmit={handleSubmit}>
                 <textarea
                     cols="30"

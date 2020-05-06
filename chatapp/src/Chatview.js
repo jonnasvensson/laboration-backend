@@ -9,6 +9,7 @@ export default function Chatview({ userName, socket, updateSocket }) {
     const [roomId, setRoomId] = useState("");
     const [roomName, setRoomName] = useState("");
     const [inputValue, setInputValue] = useState("");
+    const [getMessages, setGetMessages] = useState([]);
 
 
     function getAxios() {
@@ -21,6 +22,8 @@ export default function Chatview({ userName, socket, updateSocket }) {
             })
     };
     console.log(rooms._id);
+
+
     
     
     const handleRoom = (id, name) => {
@@ -28,7 +31,8 @@ export default function Chatview({ userName, socket, updateSocket }) {
         .then((res) => {
             console.log(res.data);  
             console.log(res.data._id);
-
+            console.log(res.data.messages);
+            setGetMessages(res.data.messages)
         })
         .catch(e => {
             console.error(e);
@@ -39,8 +43,8 @@ export default function Chatview({ userName, socket, updateSocket }) {
         console.log(roomId);
         console.log(roomName);
         
-        
     }
+    console.log(getMessages);
 
     const handleDelete = (id, data) => {
         axios.delete(`/chatrooms/${id}`)
@@ -74,7 +78,6 @@ export default function Chatview({ userName, socket, updateSocket }) {
         setInputValue("");
     }
 
-    // kopplar med socket anrop med (id) socket.join = connection till ett speciellt rum
 
 
     useEffect(() => {
@@ -104,7 +107,7 @@ export default function Chatview({ userName, socket, updateSocket }) {
         <div className="container_chat">
             <h4>{userName}</h4>
             {
-                roomName ? <Room renderRooms={renderRooms} roomName={roomName} socket={socket} updateSocket={updateSocket} userName={userName} rooms={rooms} roomId={roomId}/> : <ul>{renderRooms}</ul>
+                roomName ? <Room getMessages={getMessages} renderRooms={renderRooms} roomName={roomName} socket={socket} updateSocket={updateSocket} userName={userName} rooms={rooms} roomId={roomId}/> : <ul>{renderRooms}</ul>
             }
             <input
                 type="text"

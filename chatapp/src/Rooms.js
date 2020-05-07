@@ -31,7 +31,6 @@ export default function Rooms({ userName, socket, updateSocket }) {
         }
         axios.post('/chatrooms', room)
             .then((res) => {
-                let data = res.data.room;
                     setRooms([...rooms, res.data])
                     getAxios();
             })

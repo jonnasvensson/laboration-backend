@@ -36,7 +36,7 @@ app.get('/chatrooms/:id', (req, res) => {
     db.collection('chatrooms')
         .findOne({_id: createObjectId(roomId)})
         .then(room => {
-            res.send(room);
+            res.status(200).send(room);
     })
     .catch(e => {
         console.error(e);

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import './App.css';
-import Header from './Header'
 
 
 export default function Chatview({ roomName, socket, userName, roomId }) {

@@ -12,7 +12,7 @@ const { getClient, getDB, createObjectId } = require('./db');
 
 app.get('/chatrooms', (req, res) => {
     console.log('DB Connected');
-    const db = getDB();
+    const db = getDB();    
 
     db.collection('chatrooms')
         .find({})
@@ -29,6 +29,8 @@ app.get('/chatrooms', (req, res) => {
 app.get('/chatrooms/:id', (req, res) => {
 
     let roomId = req.params.id;
+    console.log();
+    
 
     const db = getDB();
     db.collection('chatrooms')
@@ -44,12 +46,18 @@ app.get('/chatrooms/:id', (req, res) => {
 });
 
 app.post('/chatrooms', (req, res) => {
+    let roomName = req.body.rooms;
     const db = getDB(); 
+    console.log(db);
+    
     
     let createRoom = {
         room: req.body.room,
         messages: [],
     }
+    console.log(roomName);
+    
+    console.log(createRoom.room);
 
     db.collection('chatrooms')
         .insertOne(createRoom)
@@ -96,7 +104,7 @@ io.on('connection', (socket) => {
         .catch(e => {
             console.error(e);
         });
-        socket.broadcast.emit("message", data);       
+        io.sockets.emit("message", data);       
     })  
     socket.on('room', (roomId) => {
         socket.join(roomId)

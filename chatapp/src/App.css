@@ -5,46 +5,64 @@
 }
 
 .container {
-    width: 400px;
+    width: 700px;
     height: 500px;
     display: flex;
+    flex-direction: column;
     justify-items: center;
+    align-items: center;
+}
+
+h1 {
+    margin-bottom: 0px;
+}
+
+.underline {
+    width: 200px;
+    height: 2px;
+    background-color: black;
+    margin-bottom: 40px;
+}
+
+.underline_li {
+    width: 80px;
+    height: 2px;
+    background-color: white;
+    text-align: center;
 }
 
 .container_chat {
-    width: 400px;
+    width: 700px;
     height: 500px;
+    margin-top: 21.440px;
     background-color: lightgrey;
     border-radius: 8px;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
 }
 
-.container_messages {
-    border: 1px solid grey;
-    overflow: auto;
-}
-
-.messages_db {
-    display: flex;
-    flex-direction: column;
-    height: 200px;
+.input_room {
+    width: 30%;
+    height: 10%;
+    border-radius: 8px;
+    border: none;
+    padding-left: 10px;
+    margin-bottom: 10px;
 }
 
 form {
     width: 100%;
     height: 30%;
     display: flex;
-    align-items: flex-end;
     justify-content: center;
     margin-bottom: 5px;
 }
 
-.input__name {
+.input_name {
     width: 80%;
-    height: 60%;
+    height: 50%;
     border-radius: 8px;
     background-color: lightgray;
     border: none;
@@ -60,25 +78,42 @@ form {
     padding: 10px 0 0 10px;
 }
 
-.input__button {
+.input_button {
     width: 20%;
-    height: 60%;
+    height: 50%;
     border-radius: 8px;
     border: none;
     background-color: darkcyan;
     cursor: pointer;
 }
 
+.ul_messages {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border: 1px solid white;
+    border-radius: 8px;
+    overflow-y: scroll;
+}
+
 ul {
     display: flex;
     padding-left: 0px;
     justify-content: space-evenly;
+    flex-wrap: wrap;
 }
 
 li {
     cursor: pointer;
     list-style: none;
     text-align: center;
+    align-items: center;
+}
+
+h2 {
+    margin-bottom: 0px;
 }
 
 h4 {
@@ -90,10 +125,33 @@ h5 {
 }
 
 button {
-    width: 100px;
-    height: 40px;
+    width: 80px;
+    height: 30px;
+    margin: 8px;
     border-radius: 8px;
     border: none;
     background-color: darkcyan;
     cursor: pointer;
+}
+
+.input_roombutton {
+    width: 20%;
+    height: 10%;
+    border-radius: 8px;
+    border: none;
+    background-color: darkcyan;
+    cursor: pointer;
+}
+
+.input_messagebutton {
+    width: 20%;
+    height: 60%;
+    border-radius: 8px;
+    border: none;
+    background-color: darkcyan;
+    cursor: pointer;
+}
+
+span {
+    color: red;
 }
